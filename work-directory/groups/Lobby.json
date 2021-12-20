@@ -1,0 +1,7 @@
+{
+  "name": "Lobby",
+  "type": "DYNAMIC",
+  "memory": 512,
+  "minOnlineServices": 1,
+  "maxOnlineServices": -1
+}

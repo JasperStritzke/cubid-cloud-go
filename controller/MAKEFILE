@@ -1,0 +1,12 @@
+WORKING_DIRECTORY=../work-directory
+
+copy:
+	@echo "Copying assets for controller"
+	cd ./web
+	npm run build
+	cd ..
+	rm -r $(WORKING_DIRECTORY)/web
+	cp -r ./web/dist $(WORKING_DIRECTORY)
+	@echo "Finished copying assets"
+
+all: copy

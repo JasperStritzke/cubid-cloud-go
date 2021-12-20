@@ -1,0 +1,7 @@
+{
+  "address": "0.0.0.0:6080",
+  "domainWhitelist": [
+    "your.domain.for.ssl"
+  ],
+  "enable_ssl": false
+}
