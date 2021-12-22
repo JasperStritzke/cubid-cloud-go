@@ -11,7 +11,7 @@ func WrapExistingConfig(cfg interface{}) func() interface{} {
 	}
 }
 
-func InitConfigIfNotExists(path string, codeType string, configCallback func() interface{}) error {
+func InitConfigIfNotExists(path string, codeType string, config interface{}) error {
 	file, err, created := fileutil.OpenFileOrCreate(path)
 
 	if err != nil {
@@ -19,10 +19,9 @@ func InitConfigIfNotExists(path string, codeType string, configCallback func() i
 	}
 
 	if created {
-		cfg := configCallback()
 		encoder := fileutil.NewPrettyEncoder(file, codeType)
 
-		encodeErr := encoder.Encode(cfg)
+		encodeErr := encoder.Encode(config)
 
 		if encodeErr != nil {
 			return encodeErr

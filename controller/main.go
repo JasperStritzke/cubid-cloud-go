@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/AlexanderGrom/go-event"
 	"github.com/JasperStritzke/cubid-cloud/controller/event_names"
+	"github.com/JasperStritzke/cubid-cloud/controller/executor"
 	"github.com/JasperStritzke/cubid-cloud/controller/rest"
+	"github.com/JasperStritzke/cubid-cloud/controller/server_group"
 	"github.com/JasperStritzke/cubid-cloud/util/console/logger"
 	"github.com/JasperStritzke/cubid-cloud/util/mathutil"
 	"os"
@@ -34,6 +36,8 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	rest.InitRouter()
+	_ = executor.NewManager()
+	_ = server_group.NewGroupManager()
 
 	logger.Info("Started. Press CTRL+C (^C) to stop.")
 	// hide input because this application doesn't accept console input
@@ -50,5 +54,5 @@ func main() {
 
 	logger.Info("Successfully stopped system.")
 
-	logger.Info("System was up " + mathutil.RoundAndString(time.Now().Sub(startup).Seconds(), 2) + " seconds")
+	logger.Info("System was up " + mathutil.RoundAndString(time.Now().Sub(startup).Hours(), 2) + " hours")
 }

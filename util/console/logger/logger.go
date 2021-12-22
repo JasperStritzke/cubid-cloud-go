@@ -24,9 +24,10 @@ var Logger *golog.Logger
 func init() {
 	Logger = golog.Default
 
-	cubidAppender := &CubidAppender{}
+	cubidAppender := &CubidAppender{} //Cubid logging style :3
 	Logger.Disable("github.com/ivpusic/golog/stdout")
 	Logger.Enable(cubidAppender)
+
 	golog.Default = Logger
 
 	printHeader()
@@ -63,6 +64,18 @@ func Warn(msg string) {
 
 func Warnf(msg string, params ...interface{}) {
 	Logger.Warnf(msg, params)
+}
+
+func WarnAsImportant(msg string) {
+	Logger.Warn("")
+	Logger.Warn(msg)
+	Logger.Warn("")
+}
+
+func WarnfAsImportant(msg string, params ...interface{}) {
+	Logger.Warn("")
+	Logger.Warnf(msg, params)
+	Logger.Warn("")
 }
 
 func Error(msg string) {

@@ -1,14 +1,18 @@
 package rest
 
 import (
+	"github.com/JasperStritzke/cubid-cloud/controller/rest/auth"
 	"github.com/JasperStritzke/cubid-cloud/controller/rest/libs"
 	"github.com/JasperStritzke/cubid-cloud/controller/rest/middlewares"
 	"github.com/JasperStritzke/cubid-cloud/util/config"
 	"github.com/JasperStritzke/cubid-cloud/util/console/logger"
 	"github.com/JasperStritzke/cubid-cloud/util/constants"
+	"github.com/JasperStritzke/cubid-cloud/util/fileutil"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
+
+var manager *auth.Manager
 
 func InitRouter() {
 	gin.SetMode(gin.ReleaseMode)
@@ -30,18 +34,16 @@ func InitRouter() {
 	apiPath := engine.Group("/api")
 	apiPath.GET("/status", libs.ResponseStaticMessage("Service is up and running."))
 
+	manager = auth.NewManager()
+
 	run(engine)
 }
 
 func run(engine *gin.Engine) {
-	_ = config.InitConfigIfNotExists("ui.json", func() interface{} {
-		return Config{
-			Address: "0.0.0.0:6080",
-		}
-	})
+	_ = config.InitConfigIfNotExists("ui.json", fileutil.CodingJSON, Config{Address: "0.0.0.0:6080"})
 
 	var cfg Config
-	_ = config.LoadConfig("ui.json", &cfg)
+	_ = config.LoadConfig("ui.json", fileutil.CodingJSON, &cfg)
 	url := cfg.Address
 
 	var err error

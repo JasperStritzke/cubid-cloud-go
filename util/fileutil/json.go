@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	CodeTypeJSON = "json"
-	CodeTypeGOB  = "gob"
+	CodingJSON = "json"
+	CodingGOB  = "gob"
 )
 
 type IEncoder interface {
@@ -22,11 +22,11 @@ type IDecoder interface {
 
 func NewPrettyEncoder(w io.Writer, encodeType string) IEncoder {
 	switch encodeType {
-	case CodeTypeJSON:
+	case CodingJSON:
 		encoder := json.NewEncoder(w)
 		encoder.SetIndent("", "  ")
 		return encoder
-	case CodeTypeGOB:
+	case CodingGOB:
 		encoder := gob.NewEncoder(w)
 		return encoder
 	default:
@@ -37,10 +37,10 @@ func NewPrettyEncoder(w io.Writer, encodeType string) IEncoder {
 //NewDecoder is just implemented for uniformed handling
 func NewDecoder(r io.Reader, encodeType string) IDecoder {
 	switch encodeType {
-	case CodeTypeJSON:
+	case CodingJSON:
 		decoder := json.NewDecoder(r)
 		return decoder
-	case CodeTypeGOB:
+	case CodingGOB:
 		decoder := gob.NewDecoder(r)
 		return decoder
 	default:
@@ -49,7 +49,7 @@ func NewDecoder(r io.Reader, encodeType string) IDecoder {
 }
 
 func MarshalIndent(cfg interface{}, codeType string) ([]byte, error) {
-	if codeType == CodeTypeGOB {
+	if codeType == CodingGOB {
 		var buf bytes.Buffer
 		encoder := gob.NewEncoder(&buf)
 		err := encoder.Encode(cfg)

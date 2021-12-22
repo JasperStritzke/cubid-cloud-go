@@ -7,14 +7,14 @@ import (
 )
 
 func Start() {
-	_ = config.InitConfigIfNotExists("net.json", fileutil.CodeTypeJSON, func() interface{} {
+	_ = config.InitConfigIfNotExists("net.json", fileutil.CodingJSON, func() interface{} {
 		return Config{
 			Host: "127.0.0.1:4050",
 		}
 	})
 
 	var cfg Config
-	_ = config.LoadConfig("net.json", fileutil.CodeTypeJSON, &cfg)
+	_ = config.LoadConfig("net.json", fileutil.CodingJSON, &cfg)
 
 	network.NewServer(cfg.Host, *network.NewListener(
 		onConnect,

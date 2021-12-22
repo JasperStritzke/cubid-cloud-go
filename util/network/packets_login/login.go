@@ -3,8 +3,7 @@ package packets
 const LoginRequestAction = "REQUEST_LOGIN"
 
 type PacketAuthLoginRequest struct {
-	Info string `json:"info"`
-	Key  string `json:"key"`
+	Key string `json:"key"`
 }
 
 const LoginResponseAction = "RESPONSE_LOGIN"
