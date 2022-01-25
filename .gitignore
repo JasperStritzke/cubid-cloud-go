@@ -23,4 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 logs
+work-directory
 *.log
