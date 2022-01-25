@@ -11,8 +11,10 @@ type Executor struct {
 }
 
 type Info struct {
-	Name      string `json:"name"`
-	SecretKey string `json:"secret_key"`
+	Name        string `json:"Name"`
+	MaxMemory   int    `json:"max_memory"`
+	MaxCPUUsage int    `json:"max_cpu_usage"`
+	SecretKey   string `json:"secret_key"`
 }
 
 func (e *Executor) IsConnected() bool {

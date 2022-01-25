@@ -1,7 +1,10 @@
 import trigger_alert from "@/store/actions/alert";
-import {add_snackbar, next_snackbar} from "@/store/actions/snackbar";
+import {next_snackbar, add_snackbar} from "@/store/actions/snackbar";
+import logout from "@/store/actions/auth";
+import {show_dialog} from "@/store/actions/dialog";
 
 export default {
     trigger_alert,
-    add_snackbar, next_snackbar
+    next_snackbar, add_snackbar, logout,
+    show_dialog
 }

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <v-layout justify-center align-center column>
-      <v-card max-width="450" min-width="350" :loading="loading">
+      <v-card max-width="450" :loading="loading">
         <v-card-title>Login</v-card-title>
         <v-card-subtitle>Sign in using your credentials provided by cubid.</v-card-subtitle>
         <v-form @submit.prevent="login" ref="loginForm">
@@ -17,14 +17,13 @@
                 :rules="requiredRules"
                 v-model="password" :disabled="loading"
             />
+            <totp-input v-model="otp" ref="totp" :disabled="loading" :rules="totpRequired"/>
           </v-card-text>
           <v-card-actions>
             <v-btn type="submit" color="primary" block :loading="loading">Sign in</v-btn>
           </v-card-actions>
         </v-form>
       </v-card>
-      <div class="author-mention">cubid.cloud &copy; {{ new Date().getFullYear() }} - made by Jasper S.</div>
-      <setup v-model="setup" class="setup-modal"/>
     </v-layout>
   </v-container>
 </template>
@@ -33,11 +32,12 @@
 import Vue from 'vue'
 import Component from "vue-class-component";
 import axios from "axios";
-import Setup from "@/views/public/Setup";
+import TotpInput from "@/components/custom_inputs/TotpInput";
+import AuthorMention from "@/components/AuthorMention";
 
 @Component({
   name: "Login",
-  components: {Setup}
+  components: {AuthorMention, TotpInput}
 })
 export default class extends Vue {
   login() {
@@ -47,43 +47,40 @@ export default class extends Vue {
       this.loading = true;
 
       axios.post(
-          "/login",
+          "/auth/login",
           {
-            auth: btoa(`${this.username}:${this.password}`),
-          },
-      ).then(result => {
-        this.username = ""
-        this.password = ""
+            a: btoa(this.username),
+            b: btoa(this.password),
+            c: this.$refs.totp.getRawValue()
+          }
+      ).then(r => r.data).then(data => {
         this.loading = false
+
+        this.$store.dispatch('add_snackbar', "Authenticated as " + this.username)
+
+        this.$store.commit('set_auth_token', {token: data.token, username: this.username})
+
+        this.$router.push("/")
       }).catch(() => {
         this.loading = false;
-        this.$store.dispatch('trigger_alert', {type: "error", text: "An error occured while logging in."})
+
+        this.$store.dispatch('trigger_alert', {type: "error", text: "Invalid credentials"})
       })
     }
   }
 
-  setup = false
-
   requiredRules = [
     v => !!v || "Field is required"
+  ]
+
+  totpRequired = [
+    v => v.length >= 9 || "Field must be filled out"
   ]
 
   loading = false
 
   username = ""
   password = ""
+  otp = ""
 }
 </script>
-<style>
-div.author-mention {
-  position: fixed;
-  bottom: 30px;
-  opacity: .5;
-  user-select: none;
-}
-
-/* setup modal should be ignored in layout */
-.setup-modal {
-  position: absolute;
-}
-</style>

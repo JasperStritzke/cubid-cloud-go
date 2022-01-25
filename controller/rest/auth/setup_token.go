@@ -2,8 +2,8 @@ package auth
 
 import (
 	"github.com/JasperStritzke/cubid-cloud/util/console/logger"
-	"github.com/JasperStritzke/cubid-cloud/util/crypto"
 	"github.com/JasperStritzke/cubid-cloud/util/fileutil"
+	"github.com/JasperStritzke/cubid-cloud/util/random"
 	"io/ioutil"
 	"os"
 )
@@ -19,7 +19,7 @@ func GenerateSetupToken() {
 
 	_ = fileutil.CreateIfNotExists(setupTokenPath)
 
-	cachedSetupToken = crypto.Salt()
+	cachedSetupToken, _ = random.GenerateRandomString(64)
 	err := ioutil.WriteFile(setupTokenPath, []byte(cachedSetupToken), os.ModePerm)
 
 	if err != nil {
@@ -35,4 +35,6 @@ func VerifySetupToken(providedToken string) bool {
 
 func DeleteSetupToken() {
 	_ = os.Remove(setupTokenPath)
+
+	cachedSetupToken = ""
 }

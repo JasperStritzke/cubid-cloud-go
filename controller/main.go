@@ -35,9 +35,10 @@ func main() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
-	rest.InitRouter()
-	_ = executor.NewManager()
+	executorManager := executor.NewManager()
 	_ = server_group.NewGroupManager()
+
+	rest.InitRouter(executorManager)
 
 	logger.Info("Started. Press CTRL+C (^C) to stop.")
 	// hide input because this application doesn't accept console input

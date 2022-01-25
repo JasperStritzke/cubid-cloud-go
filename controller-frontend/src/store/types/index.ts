@@ -5,10 +5,27 @@ export interface Alert {
     id: number,
 }
 
+export interface Dialog {
+    title: string,
+    text: string | undefined,
+    type: "success" | "warning" | "error",
+    confirmButton: string | undefined,
+    cancelText: string | undefined,
+    danger: boolean | undefined,
+    resolve: (value: boolean) => void | undefined,
+    id: string,
+    waitTime: number
+}
+
 export interface AuthState {
-    loggedIn: boolean,
     userName: string,
-    sessionToken: string
+    sessionToken: string,
+}
+
+export interface SetupState {
+    setupMode: boolean,
+    totpTokenVisible: boolean,
+    totpQRCode: string | undefined
 }
 
 export interface State {
@@ -18,6 +35,8 @@ export interface State {
         value: boolean,
         text: string | undefined
     },
-    auth: undefined | AuthState
+    dialogs: Dialog[],
+    auth: undefined | AuthState,
+    setup: SetupState,
 }
 

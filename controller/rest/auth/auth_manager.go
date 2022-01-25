@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-const authFile = "acp-auth.gob"
+const authFile = "auth"
 
 type Manager struct {
 	Accounts []Account
@@ -20,27 +20,35 @@ func (m *Manager) RequiresSetup() bool {
 }
 
 func (m *Manager) CreateAccount(account Account) error {
+	if index, _ := m.GetAccount(account.Username); index != -1 {
+		return errors.New("account already exists")
+	}
+
+	logger.Infof("Account %s was created", account.Username)
+
 	m.Accounts = append(m.Accounts, account)
 	return m.save()
 }
 
-func (m *Manager) DeleteAccount(email string) error {
-	foundIndex, _ := m.GetAccount(email)
+func (m *Manager) DeleteAccount(username string) error {
+	foundIndex, _ := m.GetAccount(username)
 
 	if foundIndex == -1 {
 		return errors.New("account not found")
 	}
 
 	m.Accounts[foundIndex] = m.Accounts[len(m.Accounts)-1] //Copy last element to element where account usually was
-	m.Accounts[len(m.Accounts)-1] = Account{}
-	m.Accounts = m.Accounts[:len(m.Accounts)-1]
+	m.Accounts[len(m.Accounts)-1] = Account{}              //Set last value to Account zero value
+	m.Accounts = m.Accounts[:len(m.Accounts)-1]            //Slice the slice :0 (remove last value)
 	return nil
 }
 
-func (m *Manager) GetAccount(email string) (int, *Account) {
-	for index, account := range m.Accounts {
-		if account.Email == email {
-			return index, &account
+func (m *Manager) GetAccount(username string) (int, *Account) {
+	if m.Accounts != nil {
+		for index, account := range m.Accounts {
+			if account.Username == username {
+				return index, &account
+			}
 		}
 	}
 
@@ -49,6 +57,20 @@ func (m *Manager) GetAccount(email string) (int, *Account) {
 
 func (m *Manager) save() error {
 	return config.WriteConfig(authFile, fileutil.CodingGOB, m)
+}
+
+func (m *Manager) Login(username, password, otp string) string {
+	index, account := m.GetAccount(username)
+
+	if index == -1 {
+		return ""
+	}
+
+	if account.ValidatePassword(password) && account.ValidateOTP(otp) {
+		return GenerateSession(account)
+	}
+
+	return ""
 }
 
 func NewManager() *Manager {

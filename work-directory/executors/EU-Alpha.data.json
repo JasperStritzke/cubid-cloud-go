@@ -1,0 +1,6 @@
+{
+  "Name": "EU-Alpha",
+  "max_memory": 4096,
+  "max_cpu_usage": 60,
+  "secret_key": "hyC0IQoj85f2Pm9YsPB35E27xSYN6cR84GgLhGGJAR58RPBxvZpePPjyWkUNAvbb"
+}

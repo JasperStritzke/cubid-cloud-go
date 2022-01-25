@@ -1,7 +1,7 @@
 import store from "@/store";
 import {State} from "@/store/types";
 
-export function trigger_alert(state: State, {type = "warning", duration = 3000, text = "No text provided", id = -1}) {
+export function trigger_alert(state: State, {type = "warning", duration = 5000, text = "No text provided", id = -1}) {
     if (id < 0) return
 
     state.alerts.push({

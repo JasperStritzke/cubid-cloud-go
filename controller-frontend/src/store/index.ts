@@ -4,9 +4,21 @@ import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
 
-import {State} from "@/store/types";
+import {AuthState, State} from "@/store/types";
+import setAuthToken from "@/plugins/axios";
 
 Vue.use(Vuex)
+
+let authState: AuthState | undefined = undefined
+
+if (localStorage.getItem("auth") !== null) {
+    const s: string = <string>localStorage.getItem("auth")
+    authState = JSON.parse(s)
+}
+
+if (authState) {
+    setAuthToken(authState.sessionToken)
+}
 
 const defaultState: State = {
     alerts: [],
@@ -15,7 +27,13 @@ const defaultState: State = {
         value: false,
         text: undefined,
     },
-    auth: undefined
+    dialogs: [],
+    auth: authState,
+    setup: {
+        setupMode: false,
+        totpTokenVisible: false,
+        totpQRCode: undefined,
+    }
 }
 
 const store = new Vuex.Store({
@@ -25,6 +43,5 @@ const store = new Vuex.Store({
     getters: getters,
     modules: {}
 })
-
 
 export default store;
